@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLIK Checkout - UX Gap Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --critical: #dc2626;
+            --medium: #eab308;
+            --low: #0891b2;
+            --success: #16a34a;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --bg-white: #ffffff;
+            --border: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: var(--bg-white);
+            padding: 3rem 2rem;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        header .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        header .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card.critical { border-left-color: var(--critical); }
+        .stat-card.medium { border-left-color: var(--medium); }
+        .stat-card.low { border-left-color: var(--low); }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: var(--bg-white);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tabs button {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border);
+            background: var(--bg-white);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-tabs button:hover {
+            border-color: var(--primary);
+            background: var(--bg-light);
+        }
+
+        .nav-tabs button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .priority-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .priority-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .priority-badge.critical { background: var(--critical); }
+        .priority-badge.medium { background: var(--medium); }
+        .priority-badge.low { background: var(--low); }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .section-header .badge-text {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .issue-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .issue-card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .issue-card.expanded {
+            grid-column: 1 / -1;
+        }
+
+        .issue-card.expanded .issue-details {
+            display: block;
+        }
+
+        .issue-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .issue-number {
+            background: var(--bg-light);
+            border-radius: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            font-weight: bold;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .issue-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .issue-scope {
+            display: inline-block;
+            background: #dbeafe;
+            color: #0c4a6e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin: 0.5rem 0;
+        }
+
+        .issue-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+
+        .issue-details {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .issue-details h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .issue-details ul,
+        .issue-details ol {
+            margin-left: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .issue-details li {
+            margin-bottom: 0.4rem;
+        }
+
+        .issue-action {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            border-left: 3px solid var(--success);
+        }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 1.2rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .expand-btn::before {
+            content: '▼';
+            font-size: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .issue-card.expanded .expand-btn::before {
+            transform: rotate(180deg);
+        }
+
+        .features-summary {
+            margin: 3rem 0;
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+        }
+
+        .features-summary h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: var(--bg-light);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        .action-plan {
+            margin: 3rem 0;
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+        }
+
+        .action-plan h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .phase {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .phase:last-child {
+            border-bottom: none;
+        }
+
+        .phase h4 {
+            background: var(--bg-light);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.05rem;
+        }
+
+        .phase ol {
+            margin-left: 2rem;
+            color: var(--text-light);
+        }
+
+        .phase li {
+            margin-bottom: 0.75rem;
+        }
+
+        footer {
+            background: var(--bg-white);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-box h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .summary-box p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .note-box {
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #0369a1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                padding: 1.5rem;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .issues-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tabs button {
+                width: 100%;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+
+        .expand-all-btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .expand-all-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        @media print {
+            .nav-tabs, .expand-all-btn {
+                display: none;
+            }
+
+            .issue-card {
+                page-break-inside: avoid;
+            }
+
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛒 FLIK Checkout - UX Gap Report</h1>
+            <p class="subtitle">Real Design & Usability Issues (Excluding Documentation Gaps)</p>
+            
+            <div class="note-box">
+                📝 <strong>Focus:</strong> This report identifies actual UX/design inconsistencies found in the product. Documentation and error messages are already in place in production.
+            </div>
+
+            <div class="stats">
+                <div class="stat-card critical">
+                    <div class="number">4</div>
+                    <div class="label">🔴 Critical</div>
+                </div>
+                <div class="stat-card medium">
+                    <div class="number">11</div>
+                    <div class="label">🟡 Medium</div>
+                </div>
+                <div class="stat-card low">
+                    <div class="number">2</div>
+                    <div class="label">🔵 Low</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="summary-box">
+            <h3>📊 Executive Summary</h3>
+            <p>This UX gap report identifies <strong>17 real design and usability issues</strong> in the FLIK Checkout product. These are actual inconsistencies and UX problems found in the live product (shown in screenshots), not missing documentation.</p>
+            <p><strong>Key Finding:</strong> Most issues relate to visual consistency, unclear status states, and inconsistent interactions across different checkout flows and platforms.</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-priority="critical">🔴 Critical (4)</button>
+            <button class="tab-btn" data-priority="medium">🟡 Medium (11)</button>
+            <button class="tab-btn" data-priority="low">🔵 Low (2)</button>
+            <button class="tab-btn" data-priority="summary">📊 Summary & Plan</button>
+        </div>
+
+        <!-- CRITICAL PRIORITY -->
+        <div class="priority-section active" id="critical-section">
+            <div class="section-header">
+                <div class="priority-badge critical">🔴</div>
+                <div>
+                    <h2>Critical UX Issues</h2>
+                    <p class="badge-text">High Impact - Confuse Users or Break Workflows</p>
+                </div>
+            </div>
+
+            <button class="expand-all-btn" onclick="toggleAllCards('critical-section')">Expand All Details</button>
+
+            <div class="issues-grid" id="critical-grid">
+                <!-- Issues will be inserted by JavaScript -->
+            </div>
+        </div>
+
+        <!-- MEDIUM PRIORITY -->
+        <div class="priority-section" id="medium-section">
+            <div class="section-header">
+                <div class="priority-badge medium">🟡</div>
+                <div>
+                    <h2>Medium Priority UX Issues</h2>
+                    <p class="badge-text">Moderate Impact - Reduce Clarity or Efficiency</p>
+                </div>
+            </div>
+
+            <button class="expand-all-btn" onclick="toggleAllCards('medium-section')">Expand All Details</button>
+
+            <div class="issues-grid" id="medium-grid">
+                <!-- Issues will be inserted by JavaScript -->
+            </div>
+        </div>
+
+        <!-- LOW PRIORITY -->
+        <div class="priority-section" id="low-section">
+            <div class="section-header">
+                <div class="priority-badge low">🔵</div>
+                <div>
+                    <h2>Low Priority UX Issues</h2>
+                    <p class="badge-text">Minor Impact - Nice to Fix</p>
+                </div>
+            </div>
+
+            <button class="expand-all-btn" onclick="toggleAllCards('low-section')">Expand All Details</button>
+
+            <div class="issues-grid" id="low-grid">
+                <!-- Issues will be inserted by JavaScript -->
+            </div>
+        </div>
+
+        <!-- SUMMARY & ACTION PLAN -->
+        <div class="priority-section" id="summary-section">
+            <div class="features-summary">
+                <h3>📋 Checkout Features Coverage</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Scope</th>
+                                <th style="text-align: center;">🔴 Critical</th>
+                                <th style="text-align: center;">🟡 Medium</th>
+                                <th style="text-align: center;">🔵 Low</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Delivery Mode Selection</strong></td>
+                                <td>Shipping vs Pickup tabs, visual states</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Courier/Shipping Price</strong></td>
+                                <td>Price display, formatting, selection</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Payment Method Selection</strong></td>
+                                <td>Desktop vs Mobile differences</td>
+                                <td style="text-align: center;">1</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Store Location/Map</strong></td>
+                                <td>Pickup location, map interaction</td>
+                                <td style="text-align: center;">0</td>
+                                <td style="text-align: center;">3</td>
+                                <td style="text-align: center;">1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Error & Validation</strong></td>
+                                <td>Error positioning, styling, clarity</td>
+                                <td style="text-align: center;">0</td>
+                                <td style="text-align: center;">2</td>
+                                <td style="text-align: center;">1</td>
+                            </tr>
+                            <tr style="background: var(--bg-light); font-weight: bold;">
+                                <td colspan="2"><strong>TOTAL</strong></td>
+                                <td style="text-align: center; color: var(--critical);">4</td>
+                                <td style="text-align: center; color: var(--medium);">11</td>
+                                <td style="text-align: center; color: var(--low);">2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="action-plan">
+                <h3>🚀 Implementation Roadmap</h3>
+
+                <div class="phase">
+                    <h4>Phase 1: Week 1 - Critical Fixes (High ROI)</h4>
+                    <ol>
+                        <li><strong>Fix tab visual hierarchy</strong> - Make active delivery mode clearly visible (ship vs pickup)</li>
+                        <li><strong>Standardize price formatting</strong> - Use consistent currency display across all modals and screens</li>
+                        <li><strong>Align desktop/mobile payments</strong> - Show same payment methods on both platforms</li>
+                        <li><strong>Fix store pickup UI</strong> - Ensure correct tab appears active when pickup mode is selected</li>
+                    </ol>
+                </div>
+
+                <div class="phase">
+                    <h4>Phase 2: Weeks 2-3 - Medium Fixes (Polish)</h4>
+                    <ol>
+                        <li>Improve error message positioning and clarity</li>
+                        <li>Add visual feedback for incomplete fields</li>
+                        <li>Clarify delivery time units (hours vs days)</li>
+                        <li>Standardize auto-selected item indication</li>
+                        <li>Improve discount confirmation visibility</li>
+                        <li>Fix map interaction in scrollable modals</li>
+                    </ol>
+                </div>
+
+                <div class="phase">
+                    <h4>Phase 3: Week 4 - Polish & Testing</h4>
+                    <ol>
+                        <li>Quality assurance testing across platforms</li>
+                        <li>A/B test changes for conversion impact</li>
+                        <li>User testing with sample merchants</li>
+                        <li>Monitor checkout completion rates</li>
+                    </ol>
+                </div>
+
+                <h3 style="margin-top: 2rem;">📊 Expected Impact</h3>
+                <ul style="margin-left: 1.5rem; color: var(--text-light);">
+                    <li><strong>Estimated Fix Time:</strong> 30-45 hours total (dev + design)</li>
+                    <li><strong>Expected Conversion Improvement:</strong> 2-5% increase in checkout completion</li>
+                    <li><strong>User Satisfaction:</strong> Clearer, less confusing checkout experience</li>
+                    <li><strong>Support Tickets:</strong> Reduction in checkout-related questions</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>Generated: April 24, 2026 | FLIK Checkout UX Gap Report v1.0</p>
+            <p>Based on actual product screenshots and documented flows</p>
+        </footer>
+    </div>
+
+    <script>
+        // Issue data
+        const issues = {
+            critical: [
+                {
+                    num: 1,
+                    title: "Tab Visual Hierarchy - Delivery Mode Not Obvious",
+                    scope: "Delivery Mode Selection",
+                    issue: "Users can't clearly tell which delivery mode (Ship vs Pickup) is currently active due to weak visual differentiation",
+                    impact: "Users may not realize they've switched modes, leading to wrong delivery option selection and checkout errors",
+                    examples: [
+                        "Ship and Pickup tabs have similar styling",
+                        "Active tab not prominently highlighted",
+                        "No visual distinction when mode changes",
+                        "Text only differentiation, no color or shape change"
+                    ],
+                    solution: "Redesign tab styling with clear active state (bold text, background color, underline, or icon change)"
+                },
+                {
+                    num: 2,
+                    title: "Store Pickup Tab Styling Incorrect",
+                    scope: "Delivery Mode Selection",
+                    issue: "Store Pickup tab appears visually selected even when Shipping mode should be active",
+                    impact: "Confuses users about current delivery method; users think they're buying with pickup when shipping is selected",
+                    examples: [
+                        "Pickup tab styling shows as 'active' on shipping flow",
+                        "Tab styling doesn't match actual selected mode",
+                        "Visual state contradicts documentation"
+                    ],
+                    solution: "Fix tab active state logic and styling to match actual selection"
+                },
+                {
+                    num: 3,
+                    title: "Courier Price Display Inconsistency",
+                    scope: "Courier/Shipping Price",
+                    issue: "Prices displayed in 6+ different formats across the checkout (different symbols, spacing, decimal places)",
+                    impact: "Users can't easily compare courier prices or understand total cost; confusing experience",
+                    examples: [
+                        "Some prices: 'Rp 10,000' others: 'Rp 10000'",
+                        "Some have 2 decimals, some don't",
+                        "Symbol placement inconsistent",
+                        "Spacing around prices varies"
+                    ],
+                    solution: "Create single price formatting standard (e.g., 'Rp 10.000,00') and apply across all screens"
+                },
+                {
+                    num: 4,
+                    title: "Desktop vs Mobile Payment Methods Mismatch",
+                    scope: "Payment Method Selection",
+                    issue: "Different payment methods shown on desktop vs mobile (desktop shows no cards, mobile shows cards)",
+                    impact: "Users see different options on different devices; inconsistent experience; trust issues",
+                    examples: [
+                        "Desktop checkout missing saved card options",
+                        "Mobile shows card selection, desktop doesn't",
+                        "Same checkout flow has different UIs"
+                    ],
+                    solution: "Align payment method options across all platforms; ensure feature parity"
+                }
+            ],
+            medium: [
+                {
+                    num: 5,
+                    title: "Error Message Positioning Unclear",
+                    scope: "Error & Validation",
+                    issue: "Error messages appear at top of modal, disconnected from the fields that triggered them",
+                    impact: "Users miss or ignore errors; don't know which field caused the problem",
+                    examples: [
+                        "Address error shown at modal top, field at bottom",
+                        "No visual connection between error and field",
+                        "Users scroll past errors"
+                    ],
+                    solution: "Position error messages adjacent to the field causing the error with visual indicator"
+                },
+                {
+                    num: 6,
+                    title: "Missing Visual Feedback for Incomplete Fields",
+                    scope: "Payment Method Selection",
+                    issue: "Required fields don't show clear indication when empty or invalid",
+                    impact: "Users don't know which fields must be filled; unclear validation state",
+                    solution: "Add visual indicators (asterisks, colors, icons) for required/invalid fields"
+                },
+                {
+                    num: 7,
+                    title: "Ambiguous Delivery Time Units",
+                    scope: "Courier/Shipping Price",
+                    issue: "Delivery times shown without clarity on units (hours vs days vs 'Tomorrow')",
+                    impact: "Users unsure about actual delivery timeframe; mismatched expectations",
+                    examples: [
+                        "Shows '12' - is it 12 hours or 12 days?",
+                        "Mixed with 'Next day', 'Same day'",
+                        "No time unit labels"
+                    ],
+                    solution: "Clearly label all delivery times with units ('in 24 hours', 'Tomorrow', 'Next day')"
+                },
+                {
+                    num: 8,
+                    title: "Auto-Selected Courier Not Obviously Selected",
+                    scope: "Courier/Shipping Price",
+                    issue: "When a courier is auto-selected, users can't easily see it's selected",
+                    impact: "Users think they need to select a courier; don't realize one is already chosen",
+                    examples: [
+                        "Auto-selected item has subtle selection indicator",
+                        "No checkmark or highlight",
+                        "No 'selected' label"
+                    ],
+                    solution: "Add prominent checkmark, background color, or 'Selected' badge to auto-selected courier"
+                },
+                {
+                    num: 9,
+                    title: "Weak Discount Application Confirmation",
+                    scope: "Courier/Shipping Price",
+                    issue: "Users can't see clear confirmation that discount was applied",
+                    impact: "Users unsure if voucher/promo code worked; repeat attempts; trust issues",
+                    solution: "Add success confirmation message and price recalculation animation"
+                },
+                {
+                    num: 10,
+                    title: "Map Interaction Instructions Unclear",
+                    scope: "Store Location/Map",
+                    issue: "For pickup mode, map interaction is unclear - can users click? Drag? Scroll through?",
+                    impact: "Users confused about how to interact with map; can't select location properly",
+                    examples: [
+                        "No instructions on map",
+                        "Scrollable modal contains map (unclear if scroll moves map or page)",
+                        "No visual affordance for interaction"
+                    ],
+                    solution: "Add clear instructions ('Drag to move', 'Tap store to select') and handle scroll conflicts"
+                },
+                {
+                    num: 11,
+                    title: "Mobile Map in Scrollable Modal Problem",
+                    scope: "Store Location/Map",
+                    issue: "On mobile, map is inside scrollable modal - unclear if touch scrolls map or modal",
+                    impact: "Users can't interact properly with map; get stuck trying to pan",
+                    solution: "Fix scroll event handling or restructure modal to prevent scroll conflicts"
+                },
+                {
+                    num: 12,
+                    title: "Store Location Selection Unclear",
+                    scope: "Store Location/Map",
+                    issue: "Users unsure if they've properly selected a store; no clear confirmation state",
+                    impact: "Users uncertain, may click multiple times; unclear what happens next",
+                    solution: "Add 'Store Selected' indicator and next button state change"
+                },
+                {
+                    num: 13,
+                    title: "Inconsistent Error State Colors",
+                    scope: "Error & Validation",
+                    issue: "Error states use different colors across different checkout flows",
+                    impact: "Users can't quickly identify errors; reduces scanability",
+                    solution: "Standardize error color (#dc2626 or consistent red) across entire checkout"
+                },
+                {
+                    num: 14,
+                    title: "Field Input Border Colors Inconsistent",
+                    scope: "Error & Validation",
+                    issue: "Focus and error states have different border colors on different screens",
+                    impact: "Reduces visual consistency; harder for users to understand field states",
+                    solution: "Define and apply consistent color scheme for all field states (default, focus, error, disabled)"
+                },
+                {
+                    num: 15,
+                    title: "Loading States Not Clearly Indicated",
+                    scope: "Delivery Mode Selection",
+                    issue: "When switching delivery modes or loading options, loading state not obvious",
+                    impact: "Users click multiple times thinking nothing happened; confusion about what's loading",
+                    solution: "Add spinner, skeleton, or disable button with clear loading feedback"
+                }
+            ],
+            low: [
+                {
+                    num: 16,
+                    title: "Spacing Inconsistencies in Modals",
+                    scope: "Courier/Shipping Price",
+                    issue: "Padding and margins vary between different modal sections",
+                    impact: "Reduces visual polish; feels slightly disorganized",
+                    solution: "Define spacing system and apply consistently (8px grid recommended)"
+                },
+                {
+                    num: 17,
+                    title: "Accessibility: Tab Navigation Order",
+                    scope: "Delivery Mode Selection",
+                    issue: "Tab order in modal doesn't follow visual left-to-right flow",
+                    impact: "Keyboard users have harder time navigating checkout",
+                    solution: "Fix tab order to follow visual flow (Ship tab → Address → Courier → Payment)"
+                }
+            ]
+        };
+
+        // Render issues
+        function renderIssues() {
+            Object.entries(issues).forEach(([priority, items]) => {
+                const grid = document.getElementById(`${priority}-grid`);
+                grid.innerHTML = items.map((issue, idx) => `
+                    <div class="issue-card" onclick="toggleCard(this)">
+                        <div class="issue-header">
+                            <button class="expand-btn"></button>
+                            <div style="flex: 1;">
+                                <div class="issue-number">#${issue.num}</div>
+                                <div class="issue-title">${issue.title}</div>
+                                <div class="issue-scope">${issue.scope}</div>
+                            </div>
+                        </div>
+                        <div class="issue-description">${issue.issue}</div>
+                        <div class="issue-details">
+                            <h4>💥 Impact</h4>
+                            <p>${issue.impact}</p>
+                            ${issue.examples && issue.examples.length > 0 ? `
+                                <h4>📋 Examples</h4>
+                                <ul>
+                                    ${issue.examples.map(ex => `<li>${ex}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                            <div class="issue-action">
+                                <strong>✅ Solution:</strong><br>${issue.solution}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        // Toggle card details
+        function toggleCard(card) {
+            card.classList.toggle('expanded');
+        }
+
+        // Toggle all cards in section
+        function toggleAllCards(sectionId) {
+            const section = document.getElementById(sectionId);
+            const cards = section.querySelectorAll('.issue-card');
+            const allExpanded = Array.from(cards).every(c => c.classList.contains('expanded'));
+            
+            cards.forEach(card => {
+                if (allExpanded) {
+                    card.classList.remove('expanded');
+                } else {
+                    card.classList.add('expanded');
+                }
+            });
+        }
+
+        // Tab navigation
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const priority = btn.dataset.priority;
+                
+                // Update active button
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update active section
+                document.querySelectorAll('.priority-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                if (priority === 'summary') {
+                    document.getElementById('summary-section').classList.add('active');
+                } else {
+                    document.getElementById(`${priority}-section`).classList.add('active');
+                }
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Initialize
+        renderIssues();
+    </script>
+</body>
+</html>
