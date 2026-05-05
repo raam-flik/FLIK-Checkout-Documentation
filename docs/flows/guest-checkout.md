@@ -18,7 +18,7 @@ Merchant Website (with items)
     ↓
 [Click FLIK Button]
     ↓
-Entry Point (with promo banner)
+Entry Point
     ↓
 [No Active Session]
     ↓
@@ -52,7 +52,6 @@ User arrives at the merchant's product page and sees the FLIK button at the bott
 - Product image
 - "Add to cart" button (merchant's default)
 - **FLIK "Buy it now" button** (prominent black button with orange FLIK logo)
-- Promotional banner: "Belanja Di WEB Bayar Pake QRIS Lebih Mudah 😍" (Shop on WEB, Pay with QRIS Easier 😍)
 
 **User Action**: Clicks the FLIK "Buy it now" button
 
