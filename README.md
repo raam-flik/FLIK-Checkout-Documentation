@@ -70,8 +70,8 @@ To enable FLIK Checkout on your website:
 
 **Registered Users**:
 1. Click "FLIK Buy it Now" button
-2. Login via WhatsApp OTP
-3. Confirm pre-filled information
+2. If session still exists: Redirected directly to FLIK checkout page with pre-filled information
+3. If session is gone: Login via WhatsApp OTP, then confirm pre-filled information
 4. Complete payment
 
 ### For Developers
