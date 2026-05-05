@@ -258,7 +258,6 @@ If user is NOT in the system (new WhatsApp number), system creates new user prof
 | OTP expired | Message says code is invalid | Use "Kirim Ulang" to request new OTP |
 | Phone number error | Can't enter number correctly | Verify country code selected, check number format |
 | User not registered after OTP | New user, no saved data | Fill checkout form completely, data saved for next purchase |
-| Multiple accounts | Same number registered multiple times | Contact support to merge accounts |
 
 ## Security Considerations
 
