@@ -245,11 +245,6 @@ Each courier shows:
 - **Standard Options**: Lower cost, normal delivery (2-5 days)
 - **Free Shipping**: Some couriers show GRATIS (free) option
 
-**Note on Red Zones**:
-- If address is in red zone, some couriers unavailable
-- Additional surcharge may apply to prices shown
-- See [Red Zone Information](../features/store-pickup.md) for details
-
 **User Action**: Clicks radio button for preferred courier, confirms selection
 
 ---
