@@ -165,7 +165,6 @@ When user selects an address, the system automatically chooses the most cost-eff
 
 ### Discount Types
 - **FLIK Vouchers**: Available to all users
-- **Guest Vouchers**: Limited selection for guest users
 - **Merchant Vouchers**: Specific to merchant (guest users may not be eligible)
 
 ## Version Information
