@@ -198,8 +198,6 @@ User is presented with a modal to enter their delivery address. The system inclu
 **System Behavior**:
 - Validates phone number format (must be valid)
 - Validates address against service coverage areas
-- Checks if address is in "red zone" (restricted areas)
-- If red zone, shows additional shipping costs
 
 **User Action**: Fills in all address information and clicks "Simpan"
 
