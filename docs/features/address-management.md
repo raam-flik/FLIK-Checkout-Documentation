@@ -11,7 +11,6 @@ The **Address Management** feature allows users to:
 - **Delete Address**: Remove addresses from saved list
 - **Map Integration**: Pinpoint exact location using interactive map
 - **Validation**: Auto-check address against delivery coverage areas
-- **Red Zone Detection**: Identify restricted delivery areas with surcharges
 
 ## Address Entry Modal
 
