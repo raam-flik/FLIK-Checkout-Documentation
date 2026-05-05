@@ -153,13 +153,6 @@ This documentation covers two primary merchant configurations:
 
 ## Important Concepts
 
-### Red Zone
-Areas with limited or restricted delivery coverage. Characterized by:
-- Extended delivery timelines (5-10+ days vs. standard 1-3 days)
-- Additional surcharges (20-50%+ extra cost)
-- Limited carrier options
-- Special handling requirements
-
 ### Courier Auto-Selection
 When user selects an address, the system automatically chooses the most cost-effective courier (cheapest "Ongkos Kirim").
 
